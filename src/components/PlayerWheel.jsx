@@ -3,11 +3,12 @@ import { playSound } from '../utils/sound';
 
 export default function PlayerWheel({ players, onSpinEnd }) {
     const [spinning, setSpinning] = useState(false);
+    const [hasWon, setHasWon] = useState(false);
     const [displayName, setDisplayName] = useState('???');
     const intervalRef = useRef(null);
 
     const startSpin = () => {
-        if (spinning) return;
+        if (spinning || hasWon) return;
         setSpinning(true);
 
         // Fast cycle animation
@@ -34,27 +35,35 @@ export default function PlayerWheel({ players, onSpinEnd }) {
             const winner = players[finalIndex];
             setDisplayName(winner.name);
             setSpinning(false);
+            setHasWon(true);
 
             // Small delay before notifying parent
             setTimeout(() => {
                 onSpinEnd(winner);
-            }, 1500);
+            }, 2000); // Increased delay slightly to enjoy the effect
 
         }, 3000);
     };
 
     return (
         <div className="flex flex-col items-center justify-center py-10">
-            <div className="w-64 h-64 md:w-80 md:h-80 bg-yellow-500 rounded-full border-8 border-yellow-200 shadow-[0_0_50px_rgba(253,224,71,0.6)] flex items-center justify-center mb-8 relative overflow-hidden">
+            <div className={`w-64 h-64 md:w-80 md:h-80 bg-yellow-500 rounded-full border-8 border-yellow-200 flex items-center justify-center mb-8 relative overflow-hidden transition-all duration-500 ${hasWon ? 'scale-110 shadow-[0_0_100px_rgba(253,224,71,1)] ring-8 ring-white' : 'shadow-[0_0_50px_rgba(253,224,71,0.6)]'}`}>
                 {/* Decorative inner circle */}
-                <div className="absolute w-56 h-56 border-4 border-dashed border-red-800 rounded-full opacity-30 animate-spin-slow"></div>
+                <div className={`absolute w-56 h-56 border-4 border-dashed border-red-800 rounded-full opacity-30 ${spinning ? 'animate-spin' : 'animate-spin-slow'}`}></div>
 
-                <h2 className="text-4xl md:text-5xl font-black text-red-900 text-center px-4 animate-pulse">
+                {hasWon && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-yellow-300 opacity-20 animate-pulse"></div>
+                        <div className="absolute -inset-4 bg-gradient-to-tr from-transparent via-white to-transparent opacity-30 transform rotate-45 animate-victory-shine"></div>
+                    </div>
+                )}
+
+                <h2 className={`text-4xl md:text-5xl font-black text-red-900 text-center px-4 relative z-10 ${hasWon ? 'animate-bounce drop-shadow-lg scale-125' : 'animate-pulse'}`}>
                     {displayName}
                 </h2>
             </div>
 
-            {!spinning && (
+            {!spinning && !hasWon && (
                 <button
                     onClick={startSpin}
                     className="px-12 py-4 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full text-red-900 text-2xl font-bold shadow-lg hover:scale-105 transition-transform uppercase tracking-wider border-4 border-yellow-200"
@@ -65,6 +74,10 @@ export default function PlayerWheel({ players, onSpinEnd }) {
 
             {spinning && (
                 <p className="text-yellow-200 animate-bounce mt-4 text-xl">Đang tìm người may mắn...</p>
+            )}
+
+            {hasWon && (
+                <p className="text-yellow-300 font-bold text-2xl animate-pulse mt-4">Chúc mừng!</p>
             )}
         </div>
     );

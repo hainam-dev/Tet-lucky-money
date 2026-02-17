@@ -10,6 +10,7 @@ export default {
                 'spin-slow': 'spin 8s linear infinite',
                 'zoom-in': 'zoomIn 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards',
                 'fade-in': 'fadeIn 0.8s ease-out forwards',
+                'victory-shine': 'shine 1.5s ease-in-out infinite',
             },
             keyframes: {
                 zoomIn: {
@@ -19,6 +20,10 @@ export default {
                 fadeIn: {
                     '0%': { opacity: '0', transform: 'translateY(20px)' },
                     '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+                shine: {
+                    '0%': { transform: 'translateX(-150%) rotate(45deg)' },
+                    '100%': { transform: 'translateX(150%) rotate(45deg)' },
                 }
             }
         },

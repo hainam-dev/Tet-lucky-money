@@ -53,9 +53,13 @@ function App() {
 
   const handleKeepResult = () => {
     // Mark envelope as picked
-    const newEnvelopes = envelopes.map(e =>
+    let newEnvelopes = envelopes.map(e =>
       e.id === selectedEnvelope.id ? { ...e, picked: true } : e
     )
+
+    // Shuffle remaining envelopes to randomize positions for next turn
+    newEnvelopes = newEnvelopes.sort(() => Math.random() - 0.5)
+
     setEnvelopes(newEnvelopes)
 
     // Mark player as played
