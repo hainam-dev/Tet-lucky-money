@@ -19,5 +19,7 @@ If you are developing a production application, we recommend using TypeScript wi
 npm run build
 ## Deploy
 npm i -g vercel
+
 vercel
+
 vercel --prod => Update code
